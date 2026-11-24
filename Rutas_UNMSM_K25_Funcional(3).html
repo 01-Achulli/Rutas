@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rutas UNMSM · K25</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+:root{--navy:#10263d;--blue:#2563eb;--teal:#0d9f91;--bg:#f3f6fa;--ink:#18283a;--muted:#697b8e;--line:#e3eaf1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink)}
+header{background:linear-gradient(110deg,#10263d,#19476a);color:white;padding:18px max(18px,calc((100% - 1200px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{display:flex;gap:11px;align-items:center}.logo{width:42px;height:42px;border-radius:13px;background:#ffffff20;display:grid;place-items:center;font-size:22px}.brand h1{font-size:17px;margin:0}.brand p{margin:3px 0 0;color:#c4d5e5;font-size:12px}.tag{border:1px solid #ffffff45;border-radius:20px;padding:7px 12px;font-size:12px}
+main{max-width:1200px;margin:22px auto;padding:0 16px}.intro{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:16px}.intro h2{margin:0 0 5px;font-size:24px}.intro p{margin:0;color:var(--muted);font-size:13px}.status{background:#e4f7f3;color:#087b70;border-radius:20px;padding:7px 11px;font-size:12px;font-weight:700}
+.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(310px,.8fr);gap:16px}.card{background:white;border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 8px 24px #17334a0a}.head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}.head h3{font-size:14px;margin:0}.muted{font-size:11px;color:var(--muted)}
+#map{height:500px;width:100%;background:#e7edf2}.mapnote{padding:9px 14px;color:#718094;font-size:11px;border-top:1px solid var(--line)}
+.controls{padding:16px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;font-size:11px;font-weight:800;color:#617287;margin-bottom:6px}.field select{width:100%;padding:11px;border:1px solid #d8e1eb;border-radius:10px;background:white;font-size:13px;color:var(--ink)}
+button{border:0;border-radius:10px;padding:11px 13px;font-size:12px;font-weight:800;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--blue);color:white}.secondary{background:#edf2f8;color:#29445e}.green{background:#e1f7f2;color:#08796e}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.result{margin-top:14px;padding:13px;background:#f3f8ff;border:1px solid #dceaff;border-radius:12px}.resulttop{display:flex;justify-content:space-between;align-items:center;gap:10px}.resulttop strong{font-size:13px}.eta{font-size:24px;font-weight:850;color:#1d56bf}.path{font-size:12px;line-height:1.65;color:#465b70;margin-top:6px}
+.gps{margin-top:13px;border:1px solid #dce8f3;background:#f8fbff;border-radius:12px;padding:12px}.gpsrow{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800;font-size:12px}.badge{background:#edf1f5;color:#586a7b;border-radius:20px;padding:5px 8px;font-size:10px}.badge.on{background:#ddf7ed;color:#08785c}.gpsinfo{font-size:11px;line-height:1.6;color:#53677c;margin-top:7px;overflow-wrap:anywhere}
+.right{display:flex;flex-direction:column;gap:15px}.points{padding:8px 16px}.point{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #eef2f6}.point:last-child{border:0}.letter{width:28px;height:28px;border-radius:9px;background:#eaf1ff;color:#2459c6;display:grid;place-items:center;font-weight:850;font-size:12px}.pname{font-size:12px;font-weight:750}.pdesc{font-size:10px;color:#77889a;margin-top:2px}
+.tablewrap{padding:0 12px 12px;overflow:auto}table{border-collapse:collapse;width:100%;font-size:11px}td,th{text-align:left;padding:9px 8px;border-bottom:1px solid #edf1f5}th{background:#f8fafc;color:#718094}td:last-child,th:last-child{text-align:right}.highlight{font-weight:850;color:#087b70}
+.nav{padding:14px 16px}.navtitle{font-size:12px;font-weight:800}.bar{height:7px;background:#e9eef3;border-radius:10px;margin:10px 0;overflow:hidden}.bar div{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .2s}.navinfo{font-size:11px;color:#6b7d8f;line-height:1.5}
+.warning{margin-top:15px;padding:12px 14px;background:#fff8e8;border:1px solid #f0e2b9;border-radius:12px;color:#73591c;font-size:11px;line-height:1.55}.footer{text-align:center;color:#8190a0;font-size:10px;padding:20px}
+.leaflet-popup-content{font-family:system-ui;font-size:12px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}#map{height:440px}.intro{align-items:start;flex-direction:column}header{padding:16px}.tag{display:none}}
+@media(max-width:430px){.fields{grid-template-columns:1fr}.intro h2{font-size:21px}#map{height:390px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">🧭</div><div><h1>RUTAS UNMSM</h1><p>Navegación peatonal · Estructuras Discretas</p></div></div><div class="tag">Equipo K25 · Dijkstra</div></header>
+<main>
+<div class="intro"><div><h2>Calcula tu mejor ruta</h2><p>Selecciona tu origen y destino o usa tu ubicación GPS.</p></div><div class="status">● Mapa interactivo</div></div>
+<div class="layout">
+<section class="card">
+ <div class="head"><h3>Mapa de Ciudad Universitaria</h3><span class="muted">OpenStreetMap</span></div>
+ <div id="map"></div>
+ <div class="mapnote">Toca un marcador para ver el lugar y su referencia. La ruta del grafo se resalta en azul.</div>
+ <div class="controls">
+  <div class="fields">
+   <div class="field"><label for="origin">ORIGEN</label><select id="origin"><option value="P1">Puerta 1</option><option value="COM">Comedor Universitario</option><option value="BIB">Biblioteca Central</option><option value="MAT">Ciencias Matemáticas</option><option value="FISI">FISI</option><option value="EST">Estadio Universitario</option><option value="BIO">Ciencias Biológicas</option><option value="SED">Sede Central / Plaza Cívica</option></select></div>
+   <div class="field"><label for="dest">DESTINO</label><select id="dest"><option value="FISI">FISI</option><option value="BIB">Biblioteca Central</option><option value="COM">Comedor Universitario</option><option value="MAT">Ciencias Matemáticas</option><option value="EST">Estadio Universitario</option><option value="BIO">Ciencias Biológicas</option><option value="SED">Sede Central / Plaza Cívica</option><option value="P1">Puerta 1</option></select></div>
+  </div>
+  <div class="buttons"><button class="primary" id="calc">Calcular mejor ruta</button><button class="secondary" id="swap">⇄ Invertir</button><button class="secondary" id="gpsOrigin">Usar GPS como origen</button></div>
+  <div class="result" aria-live="polite"><div class="resulttop"><strong>Tiempo estimado</strong><span class="eta" id="eta">— min</span></div><div class="path" id="path">Elige origen y destino para calcular la ruta.</div></div>
+  <div class="gps">
+   <div class="gpsrow"><span>◎ Mi ubicación actual</span><span class="badge" id="gpsBadge">GPS apagado</span></div>
+   <div class="gpsinfo" id="gpsInfo">El GPS requiere permiso del navegador y que abras esta página desde HTTPS (por ejemplo, GitHub Pages).</div>
+   <div class="buttons"><button class="green" id="gpsStart">Activar GPS</button><button class="secondary" id="gpsStop" disabled>Desactivar</button></div>
+  </div>
+ </div>
+ <div class="nav">
+  <div class="navtitle" id="navTitle">Navegación no iniciada</div><div class="bar"><div id="bar"></div></div>
+  <div class="navinfo" id="navInfo">Después de calcular la ruta, podrás iniciar una demostración del avance por los puntos.</div>
+  <div class="buttons"><button class="green" id="begin" disabled>▶ Iniciar recorrido</button><button class="secondary" id="advance" disabled>Siguiente punto →</button><button class="secondary" id="end" disabled>Finalizar</button></div>
+ </div>
+</section>
+<aside class="right">
+ <section class="card"><div class="head"><h3>Ubicaciones incluidas</h3><span class="muted">8 puntos</span></div><div class="points">
+  <div class="point"><div class="letter">P1</div><div><div class="pname">Puerta 1</div><div class="pdesc">Acceso por el sector de Av. Venezuela</div></div></div>
+  <div class="point"><div class="letter">C</div><div><div class="pname">Comedor Universitario</div><div class="pdesc">Servicio de alimentación · zona norte-central</div></div></div>
+  <div class="point"><div class="letter">B</div><div><div class="pname">Biblioteca Central Pedro Zulen</div><div class="pdesc">Av. Germán Amézaga 375</div></div></div>
+  <div class="point"><div class="letter">M</div><div><div class="pname">Facultad de Ciencias Matemáticas</div><div class="pdesc">Pabellón de Ciencias Matemáticas</div></div></div>
+  <div class="point"><div class="letter">F</div><div><div class="pname">Facultad de Ingeniería de Sistemas (FISI)</div><div class="pdesc">Pabellón de Ingeniería de Sistemas</div></div></div>
+  <div class="point"><div class="letter">E</div><div><div class="pname">Estadio Universitario</div><div class="pdesc">Zona deportiva central del campus</div></div></div>
+  <div class="point"><div class="letter">BIO</div><div><div class="pname">Facultad de Ciencias Biológicas</div><div class="pdesc">Pabellón de Ciencias Biológicas</div></div></div>
+  <div class="point"><div class="letter">S</div><div><div class="pname">Sede Central / Plaza Cívica</div><div class="pdesc">Zona administrativa y plaza institucional</div></div></div>
+ </div></section>
+ <section class="card"><div class="head"><h3>Conexiones del grafo</h3><span class="muted">Minutos estimados</span></div><div class="tablewrap"><table><thead><tr><th>Tramo</th><th>Tiempo</th></tr></thead><tbody id="edgeRows"></tbody></table></div></section>
+ <section class="card"><div class="head"><h3>Proceso de Dijkstra</h3><span class="muted">Iteraciones</span></div><div class="tablewrap"><table><thead><tr><th>Paso</th><th>Nodo fijado</th><th>Dist. destino</th></tr></thead><tbody id="steps"><tr><td colspan="3" style="text-align:center">Aún no calculado</td></tr></tbody></table></div></section>
+</aside>
+</div>
+<div class="warning"><b>Alcance y precisión:</b> el cálculo de Dijkstra sí se ejecuta sobre las conexiones y tiempos indicados en el grafo. Los tiempos son estimaciones didácticas, no mediciones oficiales. Las ubicaciones se contrastaron con el plano institucional y datos cartográficos disponibles; algunos marcadores siguen siendo aproximados. El GPS requiere HTTPS y permiso del navegador. Las líneas entre puntos representan conexiones del grafo, no caminos peatonales verificados ni indicaciones giro a giro.</div>
+</main>
+<div class="footer">Proyecto académico · UNMSM · Equipo K25 · Mapa © OpenStreetMap contributors</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+const mirlo1551=25;
+const nodes={
+ P1:{name:"Puerta 1",lat:-12.06122,lon:-77.08563,source:"Acceso del campus por el sector de Av. Venezuela; ubicación cartográfica aproximada"},
+ COM:{name:"Comedor Universitario",lat:-12.0593388,lon:-77.0830876,source:"Comedor de Ciudad Universitaria; coordenada de referencia aproximada"},
+ BIB:{name:"Biblioteca Central Pedro Zulen",lat:-12.05574,lon:-77.08559,source:"Coordenada OpenStreetMap: -12.05574, -77.08559"},
+ MAT:{name:"Facultad de Ciencias Matemáticas",lat:-12.0601864,lon:-77.0821320,source:"Pabellón de Ciencias Matemáticas · coordenada contrastada con repositorio académico UNMSM y cartografía OSM"},
+ FISI:{name:"Facultad de Ingeniería de Sistemas (FISI)",lat:-12.053697,lon:-77.085774,source:"Ubicación referencial del pabellón FISI"},
+ EST:{name:"Estadio Universitario",lat:-12.05748,lon:-77.08327,source:"Estadio de la Ciudad Universitaria; coordenada de referencia"},
+ BIO:{name:"Facultad de Ciencias Biológicas",lat:-12.0596894,lon:-77.0821137,source:"Pabellón de Ciencias Biológicas · coordenada cartográfica publicada para el campus UNMSM"},
+ SED:{name:"Sede Central / Plaza Cívica",lat:-12.05645,lon:-77.08455,source:"Zona de Sede Central y Plaza Cívica según el plano institucional; punto aproximado"}
+};
+// Conexiones del grafo y tiempos didácticos de caminata (no son tiempos oficiales).
+const graph={
+ P1:{COM:5,MAT:7},
+ COM:{P1:5,MAT:3,BIO:5,EST:5},
+ MAT:{P1:7,COM:3,BIO:4,EST:4,FISI:8},
+ BIO:{COM:5,MAT:4,EST:5,FISI:7},
+ EST:{COM:5,MAT:4,BIO:5,SED:5,BIB:7},
+ SED:{EST:5,BIB:3,FISI:7},
+ BIB:{EST:7,SED:3,FISI:6},
+ FISI:{MAT:8,BIO:7,SED:7,BIB:6}
+};
+let map,markers={},routeLine=null,gpsMarker=null,gpsCircle=null,gpsWatch=null,currentGPS=null,route=[],stepIndex=0;
+const $=id=>document.getElementById(id);
+function initMap(){
+ if(!window.L){$("gpsInfo").textContent="No se pudo cargar el mapa. Revisa tu conexión a internet.";return;}
+ map=L.map("map").setView([-12.0577,-77.0845],16);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+ Object.entries(nodes).forEach(([id,n])=>{
+  const marker=L.marker([n.lat,n.lon]).addTo(map).bindPopup("<b>"+n.name+"</b><br>"+n.source);
+  markers[id]=marker;
+ });
+ $("edgeRows").innerHTML=Object.entries(graph).flatMap(([u,edges])=>Object.entries(edges).filter(([v])=>u<v).map(([v,w])=>`<tr><td>${u} ↔ ${v}</td><td>${w} min</td></tr>`)).join("");
+}
+function dijkstra(start,end){
+ const ids=Object.keys(nodes),dist={},prev={},visited=new Set(),history=[];
+ ids.forEach(id=>dist[id]=Infinity);dist[start]=0;
+ while(visited.size<ids.length){
+  let u=ids.filter(id=>!visited.has(id)).sort((a,b)=>dist[a]-dist[b])[0];
+  if(!u||dist[u]===Infinity)break;
+  visited.add(u);
+  for(const [v,w] of Object.entries(graph[u]||{})){
+   if(!visited.has(v)&&dist[u]+w<dist[v]){dist[v]=dist[u]+w;prev[v]=u;}
+  }
+  history.push({node:u,dist:dist[end],snapshot:{...dist}});
+  if(u===end)break;
+ }
+ let path=[],cur=end;
+ if(dist[end]!==Infinity){while(cur!==undefined){path.unshift(cur);if(cur===start)break;cur=prev[cur];}if(path[0]!==start)path=[];}
+ return {distance:dist[end],path,history};
+}
+function drawPath(ids){
+ if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+ if(ids.length>1){
+  routeLine=L.polyline(ids.map(id=>[nodes[id].lat,nodes[id].lon]),{color:"#2563eb",weight:6,opacity:.9}).addTo(map);
+  map.fitBounds(routeLine.getBounds().pad(.22));
+ }
+ Object.entries(markers).forEach(([id,m])=>m.setIcon(L.divIcon({className:"",html:`<div style="width:28px;height:28px;border-radius:50%;background:${ids.includes(id)?"#2563eb":"#fff"};color:${ids.includes(id)?"#fff":"#2459c6"};border:3px solid ${ids.includes(id)?"#fff":"#2563eb"};box-shadow:0 2px 7px #0003;display:grid;place-items:center;font-weight:800;font-size:11px">${({P1:"P1",COM:"C",BIB:"B",MAT:"M",FISI:"F",EST:"E",BIO:"BIO",SED:"S"}[id]||id)}</div>`,iconSize:[28,28],iconAnchor:[14,14]})));
+}
+function showDijkstra(history,end){
+ $("steps").innerHTML=history.map((h,i)=>`<tr><td>${i+1}</td><td>${h.node}</td><td>${h.dist===Infinity?"∞":h.dist+" min"}</td></tr>`).join("");
+}
+function calculate(startOverride){
+ const s=startOverride||$("origin").value,e=$("dest").value;
+ if(s===e){route=[s];$("eta").textContent="0 min";$("path").textContent="El origen ya es el destino.";showDijkstra([],e);drawPath(route);$("begin").disabled=true;$("advance").disabled=true;$("end").disabled=true;return;}
+ const r=dijkstra(s,e);route=r.path;
+ if(!route.length){$("eta").textContent="Sin ruta";$("path").textContent="No existe una conexión entre esos puntos en el grafo.";return;}
+ $("eta").textContent=r.distance+" min";
+ $("path").innerHTML="<b>Mejor ruta:</b> "+route.map(id=>nodes[id].name).join(" → ")+"<br><b>Nodos:</b> "+route.join(" → ")+" · "+(route.length-1)+" tramos.";
+ showDijkstra(r.history,e);drawPath(route);stepIndex=0;
+ $("navTitle").textContent="Ruta calculada correctamente";$("navInfo").textContent="Tiempo estimado del grafo: "+r.distance+" minutos. Pulsa Iniciar recorrido para simular el avance.";
+ $("begin").disabled=false;$("advance").disabled=true;$("end").disabled=true;$("bar").style.width="0%";
+}
+function haversine(a,b){const R=6371000,toRad=x=>x*Math.PI/180,dLat=toRad(b.lat-a.lat),dLon=toRad(b.lon-a.lon),x=Math.sin(dLat/2)**2+Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+function nearestNode(pos){let best=null,d=Infinity;for(const [id,n] of Object.entries(nodes)){const x=haversine({lat:pos.lat,lon:pos.lon},{lat:n.lat,lon:n.lon});if(x<d){d=x;best=id;}}return {id:best,distance:d};}
+$("calc").onclick=()=>calculate();
+$("swap").onclick=()=>{const a=$("origin").value;$("origin").value=$("dest").value;$("dest").value=a;calculate();};
+$("gpsOrigin").onclick=()=>{if(!currentGPS){$("gpsInfo").textContent="Primero activa el GPS y espera a que detecte tu ubicación.";return;}const near=nearestNode(currentGPS);$("origin").value=near.id;calculate(near.id);$("gpsInfo").innerHTML+="<br>Origen aproximado asignado al punto más cercano: <b>"+nodes[near.id].name+"</b> ("+Math.round(near.distance)+" m).";};
+function showGPSPosition(pos){
+ currentGPS={lat:pos.coords.latitude,lon:pos.coords.longitude};
+ const acc=Math.round(pos.coords.accuracy);
+ if(!gpsMarker){gpsMarker=L.marker([currentGPS.lat,currentGPS.lon],{title:"Tu ubicación",zIndexOffset:1000}).addTo(map).bindPopup("Tu ubicación actual");gpsCircle=L.circle([currentGPS.lat,currentGPS.lon],{radius:acc,color:"#2563eb",fillOpacity:.08,weight:1}).addTo(map);}
+ else{gpsMarker.setLatLng([currentGPS.lat,currentGPS.lon]);gpsCircle.setLatLng([currentGPS.lat,currentGPS.lon]).setRadius(acc);}
+ map.setView([currentGPS.lat,currentGPS.lon],17);
+ const near=nearestNode(currentGPS);
+ $("gpsBadge").textContent="GPS activo";$("gpsBadge").className="badge on";
+ $("gpsInfo").innerHTML="Ubicación detectada.<br>Latitud: "+currentGPS.lat.toFixed(6)+" · Longitud: "+currentGPS.lon.toFixed(6)+"<br>Precisión: ±"+acc+" m<br>Lugar del campus más cercano: <b>"+nodes[near.id].name+"</b> ("+Math.round(near.distance)+" m).";
+ $("gpsStop").disabled=false;$("gpsStart").disabled=true;
+}
+function gpsError(err){
+ const secure=!window.isSecureContext;
+ let msg;
+ if(secure) msg="El GPS está bloqueado porque esta página no se está ejecutando en un contexto seguro. Publícala y ábrela con HTTPS (GitHub Pages o Netlify); no la abras como archivo descargado.";
+ else if(err.code===1) msg="Permiso de ubicación denegado. Activa el permiso de ubicación para este sitio en los ajustes del navegador.";
+ else if(err.code===2) msg="No se pudo obtener la ubicación. Activa la ubicación del celular y comprueba que el navegador tenga permiso.";
+ else msg="La ubicación tardó demasiado. Comprueba el GPS, sal a un lugar abierto y vuelve a intentarlo.";
+ $("gpsInfo").textContent=msg;$("gpsBadge").textContent="No disponible";$("gpsBadge").className="badge";
+ $("gpsStart").disabled=false;$("gpsStop").disabled=true;
+}
+$("gpsStart").onclick=()=>{
+ if(!navigator.geolocation){$("gpsInfo").textContent="Este navegador no admite geolocalización. Prueba con Chrome actualizado.";return;}
+ if(!window.isSecureContext){gpsError({code:0});return;}
+ if(gpsWatch!==null){navigator.geolocation.clearWatch(gpsWatch);gpsWatch=null;}
+ $("gpsInfo").textContent="Solicitando permiso de ubicación al navegador… Mantén activada la ubicación del celular.";
+ $("gpsBadge").textContent="Buscando…";$("gpsBadge").className="badge";
+ $("gpsStart").disabled=true;
+ // Un único seguimiento continuo evita iniciar dos solicitudes GPS superpuestas.
+ gpsWatch=navigator.geolocation.watchPosition(showGPSPosition,gpsError,{
+  enableHighAccuracy:true, maximumAge:0, timeout:60000
+ });
+};
+$("gpsStop").onclick=()=>{if(gpsWatch!==null){navigator.geolocation.clearWatch(gpsWatch);gpsWatch=null;} currentGPS=null; $("gpsBadge").textContent="GPS apagado";$("gpsBadge").className="badge";$("gpsInfo").textContent="Seguimiento detenido. Puedes volver a activarlo cuando quieras.";$("gpsStart").disabled=false;$("gpsStop").disabled=true;};
+$("begin").onclick=()=>{if(route.length<2)return;stepIndex=0;$("navTitle").textContent="Recorrido iniciado";$("navInfo").textContent="Dirígete hacia "+nodes[route[1]].name+". Avanza para simular el siguiente punto.";$("begin").disabled=true;$("advance").disabled=false;$("end").disabled=false;};
+$("advance").onclick=()=>{if(stepIndex<route.length-1){stepIndex++;const id=route[stepIndex];$("bar").style.width=(stepIndex/(route.length-1)*100)+"%";$("navTitle").textContent=stepIndex===route.length-1?"¡Llegaste a "+nodes[id].name:"Punto actual: "+nodes[id].name;$("navInfo").textContent=stepIndex===route.length-1?"Recorrido de demostración completado. Tiempo estimado: "+$("eta").textContent+".":"Siguiente punto: "+nodes[route[stepIndex+1]].name+".";if(stepIndex===route.length-1)$("advance").disabled=true;}};
+$("end").onclick=()=>{$("navTitle").textContent="Recorrido detenido";$("navInfo").textContent="La demostración se detuvo. Calcula una ruta para comenzar otra vez.";$("begin").disabled=false;$("advance").disabled=true;$("end").disabled=true;};
+initMap();
+</script>
+</body></html>
